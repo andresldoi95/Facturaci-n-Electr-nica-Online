@@ -2,6 +2,7 @@
 
 namespace App\Models\General;
 
+use App\Models\Comprobantes\PuntoEmision;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -18,5 +19,8 @@ class Establecimiento extends Model
     ];
     public function empresa() {
         return $this->belongsTo(Empresa::class);
+    }
+    public function puntosEmision() {
+        return $this->hasMany(PuntoEmision::class);
     }
 }

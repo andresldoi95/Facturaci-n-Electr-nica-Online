@@ -10,6 +10,9 @@ return [
         'descripcion' => 'Descripción',
         'codigo_institucion' => 'Código de institución',
         'direccion' => 'Dirección',
-        'empresa' => 'Empresa'
+        'empresa' => 'Empresa',
+        'tipo_comprobante' => 'Tipo de comprobante',
+        'electronico' => 'Electrónico',
+        'puntos_emision' => 'Puntos de emisión'
     ]
 ];

@@ -6,12 +6,17 @@ use App\Filament\Resources\General\EstablecimientoResource\Pages;
 use App\Filament\Resources\General\EstablecimientoResource\RelationManagers;
 use App\Models\General\Establecimiento;
 use Filament\Forms;
+use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Forms\Components\Actions\Action;
 
 class EstablecimientoResource extends Resource
 {
@@ -40,6 +45,38 @@ class EstablecimientoResource extends Resource
                     ->label(__('labels.establecimientos.direccion'))
                     ->required()
                     ->maxLength(300),
+                Repeater::make('puntosEmision')
+                    ->columnSpan(2)
+                    ->relationship()
+                    ->schema([
+                        Select::make('tipo_comprobante_id')
+                            ->relationship('tipoComprobante', 'nombre')
+                            ->columnSpan(2)
+                            ->label(__('labels.establecimientos.tipo_comprobante'))
+                            ->required(),
+                        TextInput::make('nombre')
+                            ->required()
+                            ->maxLength(255),
+                        TextInput::make('codigo_emisor')
+                            ->required()
+                            ->integer()
+                            ->maxLength(3),
+                        TextInput::make('numero_inicial')
+                            ->required()
+                            ->integer()
+                            ->maxLength(9),
+                        Toggle::make('electronico')
+                            ->inline()
+                            ->label(__('labels.establecimientos.electronico'))
+                            ->default(true)
+                    ])
+                    ->addActionLabel(__('actions.establecimientos.add_punto_emision'))
+                    ->label(__('labels.establecimientos.puntos_emision'))
+                    ->deleteAction(
+                        fn (Action $action) => $action->requiresConfirmation(),
+                    )
+                    ->columns(3)
+                    ->cloneable(),
             ]);
     }
 
