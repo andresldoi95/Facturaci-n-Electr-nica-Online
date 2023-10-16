@@ -17,6 +17,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Forms\Components\Actions\Action;
+use Filament\Tables\Columns\TextColumn;
 
 class EstablecimientoResource extends Resource
 {
@@ -96,6 +97,9 @@ class EstablecimientoResource extends Resource
                 Tables\Columns\TextColumn::make('direccion')
                     ->label(__('columns.establecimientos.direccion'))
                     ->searchable(),
+                TextColumn::make('puntos_emision_count')
+                    ->label(__('columns.establecimientos.puntos_emision'))
+                    ->counts('puntosEmision'),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label(__('columns.general.created_at'))
                     ->dateTime()

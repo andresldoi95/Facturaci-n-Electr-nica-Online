@@ -14,6 +14,7 @@ return [
     'establecimientos' => [
         'descripcion' => 'Descripción',
         'codigo_institucion' => 'Código de institución',
-        'direccion' => 'Dirección'
+        'direccion' => 'Dirección',
+        'puntos_emision' => 'Puntos de emisión'
     ]
 ];
