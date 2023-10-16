@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources\General;
 
-use App\Filament\Resources\General\EmpresaResource\Pages;
-use App\Filament\Resources\General\EmpresaResource\RelationManagers;
-use App\Models\General\Empresa;
+use App\Filament\Resources\General\EstablecimientoResource\Pages;
+use App\Filament\Resources\General\EstablecimientoResource\RelationManagers;
+use App\Models\General\Establecimiento;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -13,27 +13,33 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class EmpresaResource extends Resource
+class EstablecimientoResource extends Resource
 {
-    protected static ?string $model = Empresa::class;
+    protected static ?string $model = Establecimiento::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-building-office';
+    protected static ?string $navigationIcon = 'heroicon-s-building-library';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('numero_identificacion')
-                    ->label(__('labels.empresas.numero_identificacion'))
+                Forms\Components\Select::make('empresa_id')
+                    ->label(__('labels.establecimientos.empresa'))
                     ->required()
-                    ->maxLength(20),
-                Forms\Components\TextInput::make('nombre_comercial')
+                    ->searchable()
+                    ->relationship('empresa', 'nombre_comercial'),
+                Forms\Components\TextInput::make('descripcion')
+                    ->label(__('labels.establecimientos.descripcion'))
                     ->required()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('razon_social')
-                    ->label(__('labels.empresas.razon_social'))
+                Forms\Components\TextInput::make('codigo_institucion')
+                    ->label(__('labels.establecimientos.codigo_institucion'))
                     ->required()
-                    ->maxLength(255)
+                    ->maxLength(3),
+                Forms\Components\TextInput::make('direccion')
+                    ->label(__('labels.establecimientos.direccion'))
+                    ->required()
+                    ->maxLength(300),
             ]);
     }
 
@@ -41,13 +47,17 @@ class EmpresaResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('numero_identificacion')
-                    ->label(__('columns.empresas.numero_identificacion'))
+                Tables\Columns\TextColumn::make('empresa.nombre_comercial')
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('descripcion')
+                    ->label(__('columns.establecimientos.descripcion'))
                     ->searchable(),
-                Tables\Columns\TextColumn::make('nombre_comercial')
+                Tables\Columns\TextColumn::make('codigo_institucion')
+                    ->label(__('columns.establecimientos.codigo_institucion'))
                     ->searchable(),
-                Tables\Columns\TextColumn::make('razon_social')
-                    ->label(__('columns.empresas.razon_social'))
+                Tables\Columns\TextColumn::make('direccion')
+                    ->label(__('columns.establecimientos.direccion'))
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label(__('columns.general.created_at'))
@@ -66,6 +76,10 @@ class EmpresaResource extends Resource
             ])
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
+                Tables\Filters\SelectFilter::make('empresa')
+                    ->searchable()
+                    ->multiple()
+                    ->relationship('empresa', 'nombre_comercial'),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
@@ -92,9 +106,9 @@ class EmpresaResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListEmpresas::route('/'),
-            'create' => Pages\CreateEmpresa::route('/create'),
-            'edit' => Pages\EditEmpresa::route('/{record}/edit'),
+            'index' => Pages\ListEstablecimientos::route('/'),
+            'create' => Pages\CreateEstablecimiento::route('/create'),
+            'edit' => Pages\EditEstablecimiento::route('/{record}/edit'),
         ];
     }
 
