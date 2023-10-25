@@ -27,20 +27,20 @@ class ItemResource extends Resource
         return $form
             ->schema([
                 Select::make('empresa_id')
-                ->disabledOn('edit')
-                ->required()
-                ->searchable()
-                ->relationship('empresa', 'nombre_comercial'),
+                    ->disabledOn('edit')
+                    ->required()
+                    ->searchable()
+                    ->relationship('empresa', 'nombre_comercial'),
                 Select::make('categoria_id')
-                ->label(__('labels.items.categoria'))
-                ->required()
-                ->relationship('categoria', 'nombre')
-                ->createOptionForm([
-                    TextInput::make('nombre')
-                        ->required()
-                        ->unique()
-                        ->maxLength(255)
-                ]),
+                    ->label(__('labels.items.categoria'))
+                    ->required()
+                    ->relationship('categoria', 'nombre')
+                    ->createOptionForm([
+                        TextInput::make('nombre')
+                            ->required()
+                            ->unique()
+                            ->maxLength(255)
+                    ]),
                 TextInput::make('codigo')
                     ->maxLength(20)
                     ->disabledOn('edit')
@@ -53,6 +53,9 @@ class ItemResource extends Resource
                 TextInput::make('descripcion')
                     ->label(__('labels.items.descripcion'))
                     ->maxLength(255),
+                Select::make('tarifa_id')
+                    ->required()
+                    ->relationship('tarifa', 'nombre'),
                 TextInput::make('precio')
                     ->numeric()
             ]);
@@ -78,6 +81,9 @@ class ItemResource extends Resource
                     ->label(__('columns.items.descripcion'))
                     ->sortable()
                     ->searchable(),
+                TextColumn::make('tarifa.nombre')
+                    ->searchable()
+                    ->sortable(),
                 TextColumn::make('precio')
                     ->sortable(),
                 TextColumn::make('created_at')

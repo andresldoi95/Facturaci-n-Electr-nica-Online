@@ -2,6 +2,7 @@
 
 namespace App\Models\General;
 
+use App\Models\Comprobantes\Tarifa;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -17,8 +18,13 @@ class Item extends Model
         'codigo',
         'nombre',
         'descripcion',
-        'precio'
+        'precio',
+        'tarifa_id'
     ];
+
+    public function tarifa() {
+        return $this->belongsTo(Tarifa::class);
+    }
 
     public function empresa() {
         return $this->belongsTo(Empresa::class);

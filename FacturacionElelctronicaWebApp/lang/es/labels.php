@@ -30,5 +30,10 @@ return [
         'password' => 'Contraseña',
         'password_confirmation' => 'Confirmación de contraseña',
         'foto_perfil' => 'Foto de perfil'
+    ],
+    'tarifas' => [
+        'impuesto' => 'Impuesto',
+        'codigo_institucion' => 'Código de institución',
+        'descripcion' => 'Descripción'
     ]
 ];
