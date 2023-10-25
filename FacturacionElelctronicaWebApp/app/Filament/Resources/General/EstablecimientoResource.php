@@ -3,7 +3,6 @@
 namespace App\Filament\Resources\General;
 
 use App\Filament\Resources\General\EstablecimientoResource\Pages;
-use App\Filament\Resources\General\EstablecimientoResource\RelationManagers;
 use App\Models\General\Establecimiento;
 use Filament\Forms;
 use Filament\Forms\Components\Repeater;

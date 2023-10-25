@@ -14,5 +14,10 @@ return [
         'tipo_comprobante' => 'Tipo de comprobante',
         'electronico' => 'Electrónico',
         'puntos_emision' => 'Puntos de emisión'
+    ],
+    'clientes' => [
+        'tipo_identificacion' => 'Tipo de identificación',
+        'correos' => 'Correos electrónicos',
+        'active' => '¿Activo?'
     ]
 ];

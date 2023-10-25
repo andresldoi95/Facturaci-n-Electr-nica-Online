@@ -16,5 +16,12 @@ return [
         'codigo_institucion' => 'Código de institución',
         'direccion' => 'Dirección',
         'puntos_emision' => 'Puntos de emisión'
+    ],
+    'clientes' => [
+        'tipo_identificacion' => 'T. Identificación',
+        'numero_identificacion' => '# Identificación',
+        'nombre_razon_social' => 'Nombre/Razón social',
+        'direccion' => 'Dirección',
+        'observacion' => 'Observación'
     ]
 ];
