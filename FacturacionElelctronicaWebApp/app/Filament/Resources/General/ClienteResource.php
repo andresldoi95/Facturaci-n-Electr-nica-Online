@@ -4,6 +4,7 @@ namespace App\Filament\Resources\General;
 
 use App\Filament\Resources\General\ClienteResource\Pages;
 use App\Models\General\Cliente;
+use App\Models\General\TipoIdentificacion;
 use Filament\Forms;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Form;
@@ -15,6 +16,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
+use Filament\Forms\Set;
 
 class ClienteResource extends Resource
 {
@@ -29,9 +31,18 @@ class ClienteResource extends Resource
                 Forms\Components\Select::make('tipo_identificacion_id')
                     ->label(__('labels.clientes.tipo_identificacion'))
                     ->required()
-                    ->relationship('tipoIdentificacion', 'nombre'),
+                    ->relationship('tipoIdentificacion', 'nombre')
+                    ->disabledOn('edit')
+                    ->live()
+                    ->afterStateUpdated(function (Set $set, $state) {
+                        if(blank($state)) return;
+
+                        $tipoIdentificacion = TipoIdentificacion::findOrFail($state);
+                        $set('numero_identificacion', isset($tipoIdentificacion->identificacion_defecto)?$tipoIdentificacion->identificacion_defecto:'');
+                    }),
                 TextInput::make('numero_identificacion')
                     ->required()
+                    ->disabledOn('edit')
                     ->unique(ignorable: fn ($record) => $record)
                     ->maxLength(20),
                 TextInput::make('nombre_razon_social')
