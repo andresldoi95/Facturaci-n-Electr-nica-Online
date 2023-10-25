@@ -35,5 +35,18 @@ return [
         'impuesto' => 'Impuesto',
         'codigo_institucion' => 'Código de institución',
         'descripcion' => 'Descripción'
+    ],
+    'comprobantes' => [
+        'informacion' => 'Información',
+        'informacion_adicional' => 'Información adicional',
+        'cabecera' => [
+            'punto_emision' => 'Punto de emisión',
+            'fecha_emision' => 'Fecha de emisión',
+            'cliente' => 'Cliente',
+            'numero_documento' => '# Documento'
+        ],
+        'detalles' => [
+            'item' => 'Item'
+        ]
     ]
 ];

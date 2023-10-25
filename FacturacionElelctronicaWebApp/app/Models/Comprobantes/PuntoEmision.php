@@ -6,6 +6,7 @@ use App\Models\General\Establecimiento;
 use App\Models\General\TipoComprobante;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class PuntoEmision extends Model
 {
