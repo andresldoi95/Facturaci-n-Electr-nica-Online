@@ -86,13 +86,17 @@ class ClienteResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('numero_identificacion')
                     ->label(__('columns.clientes.numero_identificacion'))
+                    ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('nombre_razon_social')
                     ->label(__('columns.clientes.nombre_razon_social'))
+                    ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('nombre_comercial')
+                    ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('direccion')
+                    ->sortable()
                     ->label(__('columns.clientes.direccion'))
                     ->searchable(),
                 Tables\Columns\TextColumn::make('observacion')

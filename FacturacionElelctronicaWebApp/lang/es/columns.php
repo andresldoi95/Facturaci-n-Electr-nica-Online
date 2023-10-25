@@ -27,5 +27,9 @@ return [
     'items' => [
         'codigo' => 'Código',
         'descripcion' => 'Descripción'
+    ],
+    'usuarios' => [
+        'nombre' => 'Nombre',
+        'foto_perfil' => 'Foto de perfil'
     ]
 ];

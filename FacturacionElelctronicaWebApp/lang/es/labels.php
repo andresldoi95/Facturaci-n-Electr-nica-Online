@@ -24,5 +24,11 @@ return [
         'codigo' => 'Código',
         'categoria' => 'Categoría',
         'descripcion' => 'Descripción'
+    ],
+    'usuarios' => [
+        'nombre' => 'Nombre',
+        'password' => 'Contraseña',
+        'password_confirmation' => 'Confirmación de contraseña',
+        'foto_perfil' => 'Foto de perfil'
     ]
 ];
