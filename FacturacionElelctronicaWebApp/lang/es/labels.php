@@ -19,5 +19,10 @@ return [
         'tipo_identificacion' => 'Tipo de identificación',
         'correos' => 'Correos electrónicos',
         'active' => '¿Activo?'
+    ],
+    'items' => [
+        'codigo' => 'Código',
+        'categoria' => 'Categoría',
+        'descripcion' => 'Descripción'
     ]
 ];

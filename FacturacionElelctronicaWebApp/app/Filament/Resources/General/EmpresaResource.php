@@ -24,6 +24,7 @@ class EmpresaResource extends Resource
         return $form
             ->schema([
                 Forms\Components\TextInput::make('numero_identificacion')
+                    ->unique(ignorable: fn ($record) => $record)
                     ->label(__('labels.empresas.numero_identificacion'))
                     ->required()
                     ->maxLength(20),

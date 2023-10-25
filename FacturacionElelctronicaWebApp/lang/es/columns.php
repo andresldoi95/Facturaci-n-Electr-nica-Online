@@ -23,5 +23,9 @@ return [
         'nombre_razon_social' => 'Nombre/Razón social',
         'direccion' => 'Dirección',
         'observacion' => 'Observación'
+    ],
+    'items' => [
+        'codigo' => 'Código',
+        'descripcion' => 'Descripción'
     ]
 ];

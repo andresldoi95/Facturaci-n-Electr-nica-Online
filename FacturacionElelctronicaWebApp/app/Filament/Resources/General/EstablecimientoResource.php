@@ -29,6 +29,7 @@ class EstablecimientoResource extends Resource
         return $form
             ->schema([
                 Forms\Components\Select::make('empresa_id')
+                    ->disabledOn('edit')
                     ->label(__('labels.establecimientos.empresa'))
                     ->required()
                     ->searchable()
@@ -38,6 +39,7 @@ class EstablecimientoResource extends Resource
                     ->required()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('codigo_institucion')
+                    ->disabledOn('edit')
                     ->label(__('labels.establecimientos.codigo_institucion'))
                     ->required()
                     ->maxLength(3),
@@ -51,6 +53,7 @@ class EstablecimientoResource extends Resource
                     ->schema([
                         Select::make('tipo_comprobante_id')
                             ->relationship('tipoComprobante', 'nombre')
+                            ->disabledOn('edit')
                             ->columnSpan(2)
                             ->label(__('labels.establecimientos.tipo_comprobante'))
                             ->required(),
@@ -58,6 +61,7 @@ class EstablecimientoResource extends Resource
                             ->required()
                             ->maxLength(255),
                         TextInput::make('codigo_emisor')
+                            ->disabledOn('edit')
                             ->required()
                             ->integer()
                             ->maxLength(3),
@@ -66,6 +70,7 @@ class EstablecimientoResource extends Resource
                             ->integer()
                             ->maxLength(9),
                         Toggle::make('electronico')
+                            ->disabledOn('edit')
                             ->inline()
                             ->label(__('labels.establecimientos.electronico'))
                             ->default(true)
@@ -84,32 +89,32 @@ class EstablecimientoResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('empresa.nombre_comercial')
+                TextColumn::make('empresa.nombre_comercial')
                     ->searchable()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('descripcion')
+                TextColumn::make('descripcion')
                     ->label(__('columns.establecimientos.descripcion'))
                     ->searchable(),
-                Tables\Columns\TextColumn::make('codigo_institucion')
+                TextColumn::make('codigo_institucion')
                     ->label(__('columns.establecimientos.codigo_institucion'))
                     ->searchable(),
-                Tables\Columns\TextColumn::make('direccion')
+                TextColumn::make('direccion')
                     ->label(__('columns.establecimientos.direccion'))
                     ->searchable(),
                 TextColumn::make('puntos_emision_count')
                     ->label(__('columns.establecimientos.puntos_emision'))
                     ->counts('puntosEmision'),
-                Tables\Columns\TextColumn::make('created_at')
+                TextColumn::make('created_at')
                     ->label(__('columns.general.created_at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
+                TextColumn::make('updated_at')
                     ->label(__('columns.general.updated_at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('deleted_at')
+                TextColumn::make('deleted_at')
                     ->label(__('columns.general.deleted_at'))
                     ->dateTime()
                     ->sortable(),
@@ -119,7 +124,7 @@ class EstablecimientoResource extends Resource
                 Tables\Filters\SelectFilter::make('empresa')
                     ->searchable()
                     ->multiple()
-                    ->relationship('empresa', 'nombre_comercial'),
+                    ->relationship('empresa', 'nombre_comercial')
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
