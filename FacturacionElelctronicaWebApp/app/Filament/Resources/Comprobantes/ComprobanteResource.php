@@ -3,14 +3,16 @@
 namespace App\Filament\Resources\Comprobantes;
 
 use App\Filament\Resources\Comprobantes\ComprobanteResource\Pages;
-use App\Filament\Resources\Comprobantes\ComprobanteResource\RelationManagers;
 use App\Models\Comprobantes\Comprobante;
 use App\Models\General\Cliente;
 use App\Models\General\Item;
+use Carbon\Carbon;
 use Filament\Forms;
 use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Tabs;
 use Filament\Forms\Form;
+use Filament\Forms\Set;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -46,6 +48,7 @@ class ComprobanteResource extends Resource
                                     ->relationship('cliente', 'nombre_razon_social'),
                                 Forms\Components\DateTimePicker::make('fecha_emision')
                                     ->label(__('labels.comprobantes.cabecera.fecha_emision'))
+                                    ->default(Carbon::now())
                                     ->required(),
                                 Forms\Components\Select::make('punto_emision_id')
                                     ->disabledOn('edit')
@@ -63,32 +66,131 @@ class ComprobanteResource extends Resource
                                     ->columns(3)
                                     ->relationship('detalles')
                                     ->collapsible()
+                                    ->cloneable()
+                                    ->collapsed()
+                                    ->itemLabel(fn (array $state): ?string => Item::find($state['item_id'])->nombre ?? __('labels.comprobantes.detalles.item'))
                                     ->schema([
                                         Forms\Components\Select::make('item_id')
                                             ->label(__('labels.comprobantes.detalles.item'))
                                             ->required()
+                                            ->columnSpan(2)
+                                            ->live()
                                             ->searchable([
                                                 'codigo', 'nombre', 'descripcion'
                                             ])
+                                            ->afterStateUpdated(function (Set $set, $state) {
+                                                if(blank($state)) return;
+
+                                                $item = Item::findOrFail($state);
+                                                $set('precio', $item->precio);
+                                            })
                                             ->getOptionLabelFromRecordUsing(fn (Item $record) => "{$record->codigo} - {$record->nombre}")
                                             ->relationship('item', 'nombre'),
                                         Forms\Components\TextInput::make('cantidad')
+                                            ->default(1)
                                             ->numeric()
                                             ->required(),
                                         Forms\Components\TextInput::make('precio')
                                             ->numeric()
-                                            ->required()
+                                            ->required(),
+                                        Forms\Components\TextInput::make('porcentaje_descuento')
+                                            ->numeric()
+                                            ->default(0)
+                                            ->required(),
+                                        Forms\Components\TextInput::make('descuento_total')
+                                            ->numeric()
+                                            ->default(0)
+                                            ->required(),
+                                        Forms\Components\TextInput::make('subtotal')
+                                            ->numeric()
+                                            ->default(0)
+                                            ->readOnly()
+                                            ->required(),
+                                        Forms\Components\TextInput::make('impuestos')
+                                            ->numeric()
+                                            ->default(0)
+                                            ->readOnly()
+                                            ->required(),
+                                        Forms\Components\TextInput::make('total')
+                                            ->numeric()
+                                            ->default(0)
+                                            ->readOnly()
+                                            ->required(),
+                                        Repeater::make('informacionAdicional')
+                                            ->columns(4)
+                                            ->columnSpan(3)
+                                            ->default([])
+                                            ->collapsible()
+                                            ->relationship('informacionAdicional')
+                                            ->schema([
+                                                Forms\Components\TextInput::make('clave')
+                                                    ->maxLength(300)
+                                                    ->required(),
+                                                Forms\Components\TextInput::make('valor')
+                                                    ->required()
+                                                    ->maxLength(300)
+                                                    ->unique(),
+                                                Forms\Components\Toggle::make('mostrar')
+                                                    ->default(true),
+                                                Forms\Components\Toggle::make('enviar')
+                                                    ->default(true)
+                                            ])
                                     ])
-                            ]),
-                        Tabs\Tab::make('Totales')
-                            ->schema([
-                                // ...
                             ]),
                         Tabs\Tab::make('informacion_adicional')
                             ->label(__('labels.comprobantes.informacion_adicional'))
                             ->schema([
-                                // ...
+                                Repeater::make('informacionAdicional')
+                                    ->label(__('labels.comprobantes.informacion_adicional'))
+                                    ->columns(4)
+                                    ->relationship('informacionAdicional')
+                                    ->collapsible()
+                                    ->default([])
+                                    ->schema([
+                                        Forms\Components\TextInput::make('clave')
+                                            ->maxLength(300)
+                                            ->required(),
+                                        Forms\Components\TextInput::make('valor')
+                                            ->required()
+                                            ->maxLength(300)
+                                            ->unique(),
+                                        Forms\Components\Toggle::make('mostrar')
+                                            ->default(true),
+                                        Forms\Components\Toggle::make('enviar')
+                                            ->default(true)
+                                    ])
                             ]),
+                    ]),
+                Section::make('Totales')
+                    ->columnSpan(1)
+                    ->columns(2)
+                    ->schema([
+                        Forms\Components\TextInput::make('subtotal_si')
+                            ->required()
+                            ->label(__('labels.comprobantes.totales.subtotal_si'))
+                            ->default(0)
+                            ->numeric()
+                            ->readOnly(),
+                        Forms\Components\TextInput::make('descuento_total')
+                            ->required()
+                            ->default(0)
+                            ->numeric()
+                            ->readOnly(),
+                        Forms\Components\TextInput::make('subtotal')
+                            ->required()
+                            ->default(0)
+                            ->numeric()
+                            ->readOnly(),
+                        Forms\Components\TextInput::make('impuestos')
+                            ->required()
+                            ->default(0)
+                            ->numeric()
+                            ->readOnly(),
+                        Forms\Components\TextInput::make('total')
+                            ->required()
+                            ->default(0)
+                            ->numeric()
+                            ->readOnly()
                     ])
             ]);
     }

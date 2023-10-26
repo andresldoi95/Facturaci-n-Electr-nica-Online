@@ -19,7 +19,13 @@ class DetalleComprobante extends Model
         'comprobante_id',
         'item_id',
         'cantidad',
-        'precio'
+        'precio',
+        'porcentaje_descuento',
+        'subtotal_si',
+        'descuento_total',
+        'subtotal',
+        'impuestos',
+        'total'
     ];
 
     public function comprobante() {
@@ -28,5 +34,8 @@ class DetalleComprobante extends Model
 
     public function item() {
         return $this->belongsTo(Item::class);
+    }
+    public function informacionAdicional() {
+        return $this->hasMany(InformacionAdicionalItem::class, 'detalle_id');
     }
 }

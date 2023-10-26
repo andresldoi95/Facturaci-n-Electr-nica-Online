@@ -47,6 +47,9 @@ return [
         ],
         'detalles' => [
             'item' => 'Item'
+        ],
+        'totales' => [
+            'subtotal_si' => 'Subtotal sin impuestos'
         ]
     ]
 ];

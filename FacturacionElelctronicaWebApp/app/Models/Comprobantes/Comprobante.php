@@ -10,13 +10,19 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Comprobante extends Model
 {
     use HasFactory, SoftDeletes;
+    protected $table = 'comp_comprobantes';
     protected $keyType = 'string';
     protected $fillable = [
         'id',
         'punto_emision_id',
         'numero_documento',
         'fecha_emision',
-        'cliente_id'
+        'cliente_id',
+        'subtotal_si',
+        'descuento_total',
+        'subtotal',
+        'impuestos',
+        'total'
     ];
     public function puntoEmision() {
         return $this->belongsTo(PuntoEmision::class);
@@ -26,6 +32,9 @@ class Comprobante extends Model
     }
     public function detalles() {
         return $this->hasMany(DetalleComprobante::class);
+    }
+    public function informacionAdicional() {
+        return $this->hasMany(InformacionAdicional::class);
     }
     public $incrementing = false;
 }
