@@ -38,4 +38,8 @@ class DetalleComprobante extends Model
     public function informacionAdicional() {
         return $this->hasMany(InformacionAdicionalItem::class, 'detalle_id');
     }
+
+    public function impuestos() {
+        return $this->hasMany(ImpuestoDetalleComprobante::class, 'detalle_id');
+    }
 }

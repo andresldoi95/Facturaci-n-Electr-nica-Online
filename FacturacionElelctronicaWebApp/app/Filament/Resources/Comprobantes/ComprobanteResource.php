@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Comprobantes;
 
 use App\Filament\Resources\Comprobantes\ComprobanteResource\Pages;
 use App\Models\Comprobantes\Comprobante;
+use App\Models\Comprobantes\PuntoEmision;
 use App\Models\General\Cliente;
 use App\Models\General\Item;
 use Carbon\Carbon;
@@ -24,6 +25,10 @@ class ComprobanteResource extends Resource
     protected static ?string $model = Comprobante::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-table-cells';
+
+    private static function calcularTotales() {
+        //To Do
+    }
 
     public static function form(Form $form): Form
     {
@@ -54,6 +59,16 @@ class ComprobanteResource extends Resource
                                     ->disabledOn('edit')
                                     ->label(__('labels.comprobantes.cabecera.punto_emision'))
                                     ->required()
+                                    ->live()
+                                    ->afterStateUpdated(function (Set $set, $state) {
+                                        if(blank($state)) return;
+
+                                        $puntoEmision = PuntoEmision::findOrFail($state);
+                                        $ultimoComprobante  = Comprobante::orderByRaw('cast(numero_documento as unsigned) desc')
+                                            ->where('punto_emision_id', $puntoEmision->id)
+                                            ->first();
+                                        $set('numero_documento', !isset($ultimoComprobante)?$puntoEmision->numero_inicial:intval($ultimoComprobante->numero_documento) + 1);
+                                    })
                                     ->relationship('puntoEmision', 'nombre'),
                                 Forms\Components\TextInput::make('numero_documento')
                                     ->label(__('labels.comprobantes.cabecera.numero_documento'))
