@@ -26,7 +26,8 @@ class ComprobanteResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-table-cells';
 
-    private static function calcularTotales() {
+    private static function calcularTotales(Set $set)
+    {
         //To Do
     }
 
@@ -34,7 +35,7 @@ class ComprobanteResource extends Resource
     {
         return $form
             ->schema([
-                Tabs::make('Label')
+                Tabs::make('Comprobante')
                     ->columnSpan(2)
                     ->tabs([
                         Tabs\Tab::make('informacion')
@@ -61,96 +62,19 @@ class ComprobanteResource extends Resource
                                     ->required()
                                     ->live()
                                     ->afterStateUpdated(function (Set $set, $state) {
-                                        if(blank($state)) return;
+                                        if (blank($state)) return;
 
                                         $puntoEmision = PuntoEmision::findOrFail($state);
                                         $ultimoComprobante  = Comprobante::orderByRaw('cast(numero_documento as unsigned) desc')
                                             ->where('punto_emision_id', $puntoEmision->id)
                                             ->first();
-                                        $set('numero_documento', !isset($ultimoComprobante)?$puntoEmision->numero_inicial:intval($ultimoComprobante->numero_documento) + 1);
+                                        $set('numero_documento', !isset($ultimoComprobante) ? $puntoEmision->numero_inicial : intval($ultimoComprobante->numero_documento) + 1);
                                     })
                                     ->relationship('puntoEmision', 'nombre'),
                                 Forms\Components\TextInput::make('numero_documento')
                                     ->label(__('labels.comprobantes.cabecera.numero_documento'))
                                     ->integer()
                                     ->required()
-                            ]),
-                        Tabs\Tab::make('Detalles')
-                            ->schema([
-                                Repeater::make('detalles')
-                                    ->columns(3)
-                                    ->relationship('detalles')
-                                    ->collapsible()
-                                    ->cloneable()
-                                    ->collapsed()
-                                    ->itemLabel(fn (array $state): ?string => Item::find($state['item_id'])->nombre ?? __('labels.comprobantes.detalles.item'))
-                                    ->schema([
-                                        Forms\Components\Select::make('item_id')
-                                            ->label(__('labels.comprobantes.detalles.item'))
-                                            ->required()
-                                            ->columnSpan(2)
-                                            ->live()
-                                            ->searchable([
-                                                'codigo', 'nombre', 'descripcion'
-                                            ])
-                                            ->afterStateUpdated(function (Set $set, $state) {
-                                                if(blank($state)) return;
-
-                                                $item = Item::findOrFail($state);
-                                                $set('precio', $item->precio);
-                                            })
-                                            ->getOptionLabelFromRecordUsing(fn (Item $record) => "{$record->codigo} - {$record->nombre}")
-                                            ->relationship('item', 'nombre'),
-                                        Forms\Components\TextInput::make('cantidad')
-                                            ->default(1)
-                                            ->numeric()
-                                            ->required(),
-                                        Forms\Components\TextInput::make('precio')
-                                            ->numeric()
-                                            ->required(),
-                                        Forms\Components\TextInput::make('porcentaje_descuento')
-                                            ->numeric()
-                                            ->default(0)
-                                            ->required(),
-                                        Forms\Components\TextInput::make('descuento_total')
-                                            ->numeric()
-                                            ->default(0)
-                                            ->required(),
-                                        Forms\Components\TextInput::make('subtotal')
-                                            ->numeric()
-                                            ->default(0)
-                                            ->readOnly()
-                                            ->required(),
-                                        Forms\Components\TextInput::make('impuestos')
-                                            ->numeric()
-                                            ->default(0)
-                                            ->readOnly()
-                                            ->required(),
-                                        Forms\Components\TextInput::make('total')
-                                            ->numeric()
-                                            ->default(0)
-                                            ->readOnly()
-                                            ->required(),
-                                        Repeater::make('informacionAdicional')
-                                            ->columns(4)
-                                            ->columnSpan(3)
-                                            ->default([])
-                                            ->collapsible()
-                                            ->relationship('informacionAdicional')
-                                            ->schema([
-                                                Forms\Components\TextInput::make('clave')
-                                                    ->maxLength(300)
-                                                    ->required(),
-                                                Forms\Components\TextInput::make('valor')
-                                                    ->required()
-                                                    ->maxLength(300)
-                                                    ->unique(),
-                                                Forms\Components\Toggle::make('mostrar')
-                                                    ->default(true),
-                                                Forms\Components\Toggle::make('enviar')
-                                                    ->default(true)
-                                            ])
-                                    ])
                             ]),
                         Tabs\Tab::make('informacion_adicional')
                             ->label(__('labels.comprobantes.informacion_adicional'))
@@ -176,7 +100,119 @@ class ComprobanteResource extends Resource
                                     ])
                             ]),
                     ]),
-                Section::make('Totales')
+                Section::make('Detalles')
+                    ->columnSpan(2)
+                    ->schema([
+                        Repeater::make('detalles')
+                            ->hiddenLabel()
+                            ->columns(4)
+                            ->relationship('detalles')
+                            ->collapsible()
+                            ->cloneable()
+                            ->itemLabel(fn (array $state): ?string => Item::find($state['item_id'])->nombre ?? __('labels.comprobantes.detalles.item'))
+                            ->schema([
+                                Forms\Components\Select::make('item_id')
+                                    ->label(__('labels.comprobantes.detalles.item'))
+                                    ->required()
+                                    ->columnSpan(2)
+                                    ->live()
+                                    ->searchable([
+                                        'codigo', 'nombre', 'descripcion'
+                                    ])
+                                    ->afterStateUpdated(function (Set $set, $state) {
+                                        if (blank($state)) return;
+
+                                        $item = Item::findOrFail($state);
+                                        $set('precio', $item->precio);
+                                    })
+                                    ->getOptionLabelFromRecordUsing(fn (Item $record) => "{$record->codigo} - {$record->nombre}")
+                                    ->relationship('item', 'nombre'),
+                                Forms\Components\TextInput::make('cantidad')
+                                    ->default(1)
+                                    ->numeric()
+                                    ->required(),
+                                Forms\Components\TextInput::make('precio')
+                                    ->numeric()
+                                    ->required(),
+                                Forms\Components\TextInput::make('porcentaje_descuento')
+                                    ->numeric()
+                                    ->default(0)
+                                    ->required(),
+                                Forms\Components\TextInput::make('subtotal_si')
+                                    ->numeric()
+                                    ->default(0)
+                                    ->readOnly()
+                                    ->required(),
+                                Forms\Components\TextInput::make('descuento_total')
+                                    ->numeric()
+                                    ->default(0)
+                                    ->required(),
+                                Forms\Components\TextInput::make('subtotal')
+                                    ->numeric()
+                                    ->default(0)
+                                    ->readOnly()
+                                    ->required(),
+                                Forms\Components\TextInput::make('impuestos')
+                                    ->numeric()
+                                    ->default(0)
+                                    ->readOnly()
+                                    ->required(),
+                                Forms\Components\TextInput::make('total')
+                                    ->numeric()
+                                    ->default(0)
+                                    ->readOnly()
+                                    ->required(),
+                                Repeater::make('impuestosDetalle')
+                                    ->addable(false)
+                                    ->deletable(false)
+                                    ->columns(4)
+                                    ->columnSpan(4)
+                                    ->default([])
+                                    ->collapsible()
+                                    ->relationship('impuestos')
+                                    ->schema([
+                                        Forms\Components\Select::make('tarifa_id')
+                                            ->label(__('labels.comprobantes.detalles.tarifa'))
+                                            ->disabled()
+                                            ->required()
+                                            ->unique()
+                                            ->relationship('tarifa', 'nombre'),
+                                        Forms\Components\TextInput::make('base_imponible')
+                                            ->readOnly()
+                                            ->numeric()
+                                            ->required(),
+                                        Forms\Components\TextInput::make('tarifa')
+                                            ->readOnly()
+                                            ->numeric()
+                                            ->required(),
+                                        Forms\Components\TextInput::make('valor')
+                                            ->readOnly()
+                                            ->numeric()
+                                            ->required()
+                                    ]),
+                                Repeater::make('informacionAdicional')
+                                    ->columns(4)
+                                    ->columnSpan(4)
+                                    ->default([])
+                                    ->collapsible()
+                                    ->relationship('informacionAdicional')
+                                    ->schema([
+                                        Forms\Components\TextInput::make('clave')
+                                            ->maxLength(300)
+                                            ->required(),
+                                        Forms\Components\TextInput::make('valor')
+                                            ->required()
+                                            ->maxLength(300)
+                                            ->unique(),
+                                        Forms\Components\Toggle::make('mostrar')
+                                            ->default(true),
+                                        Forms\Components\Toggle::make('enviar')
+                                            ->default(true)
+                                    ])
+                            ])
+                    ]),
+                Section::make('totales')
+                    ->heading(__('labels.comprobantes.totales.label'))
                     ->columnSpan(1)
                     ->columns(2)
                     ->schema([
@@ -206,6 +242,41 @@ class ComprobanteResource extends Resource
                             ->default(0)
                             ->numeric()
                             ->readOnly()
+                    ]),
+                Section::make('totalesImpuestoComprobante')
+                    ->heading(__('labels.comprobantes.totales.impuestos'))
+                    ->columnSpan(1)
+                    ->columns(4)
+                    ->schema([
+                        Repeater::make('impuestosComprobante')
+                            ->addable(false)
+                            ->deletable(false)
+                            ->columns(4)
+                            ->columnSpan(3)
+                            ->default([])
+                            ->collapsible()
+                            ->hiddenLabel()
+                            ->relationship('impuestos')
+                            ->schema([
+                                Forms\Components\Select::make('tarifa_id')
+                                    ->label(__('labels.comprobantes.detalles.tarifa'))
+                                    ->disabled()
+                                    ->required()
+                                    ->unique()
+                                    ->relationship('tarifa', 'nombre'),
+                                Forms\Components\TextInput::make('base_imponible')
+                                    ->readOnly()
+                                    ->numeric()
+                                    ->required(),
+                                Forms\Components\TextInput::make('tarifa')
+                                    ->readOnly()
+                                    ->numeric()
+                                    ->required(),
+                                Forms\Components\TextInput::make('valor')
+                                    ->readOnly()
+                                    ->numeric()
+                                    ->required()
+                            ])
                     ])
             ]);
     }

@@ -36,5 +36,8 @@ class Comprobante extends Model
     public function informacionAdicional() {
         return $this->hasMany(InformacionAdicional::class);
     }
+    public function impuestos() {
+        return $this->hasMany(ImpuestoComprobante::class);
+    }
     public $incrementing = false;
 }

@@ -46,10 +46,13 @@ return [
             'numero_documento' => '# Documento'
         ],
         'detalles' => [
-            'item' => 'Item'
+            'item' => 'Item',
+            'tarifa' => 'Tarifa'
         ],
         'totales' => [
-            'subtotal_si' => 'Subtotal sin impuestos'
+            'label' => 'Totales del comprobante',
+            'subtotal_si' => 'Subtotal sin impuestos',
+            'impuestos' => 'Impuestos del comprobante'
         ]
     ]
 ];
